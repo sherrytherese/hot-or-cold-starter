@@ -31,6 +31,7 @@ function newGame(){
 var secretNumber = Math.floor((Math.random()*100)+1);
 		console.log("The secret number is: " + secretNumber);
 var numberOfGuesses = 0;
+var list = "";
 
 /*--- Make a Guess ---*/
 
@@ -38,6 +39,9 @@ $("#guessButton").click(function(e) {
 	e.preventDefault();
 	var guess = parseInt($("#userGuess").val());
 	console.log("User guess is: " + guess);
+	/*--- List the Guesses ---*/ 
+	list += "<li>"+guess+"</li>";
+	$("#guessList").html(list);
 	game();
 
 	/*--- Game ---*/
@@ -57,16 +61,22 @@ $("#guessButton").click(function(e) {
 			/*--- Hot or Cold ---*/
 
 			if (guess == secretNumber) {
-			$("#feedback").text("You are CORRECT. You Win!");
-				//$(document).onkeypress = newGame();
-			//$.keypress(newGame()); <--how do you only make it restart if you move your key?
-			}
+				$("#feedback").text("You are CORRECT. You Win! Press Enter to play again.");
+					$(document).keypress(function(key){
+						if(key.which == 13) {
+							newGame();
+						}
+					});
+			} // <--how do you only make it restart if you press ANY key?
 				else { 
-					if(Math.abs(guess - secretNumber)<10) {
+					if(Math.abs(guess - secretNumber)<5) {
 					$("#feedback").text("You are HOT");
 					}
-					else {
-						$("#feedback").text("You are COLD");
+					else if (guess - secretNumber <0) {
+						$("#feedback").text("You are COLD. Guess a higher number!");
+					}
+					else if (guess - secretNumber >0) {
+						$("#feedback").text("You are COLD. Guess a lower number!");
 					}
 				}
 		} 
